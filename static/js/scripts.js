@@ -28,3 +28,13 @@ function getHint(n)
 {
     request('/hint/'+n,"#game-container")
 }
+
+function submitGuess(n)
+{
+    let form = document.getElementById("answer-form");
+    console.log(form);
+
+    let paramsFunc = function(){return new FormData(form);};
+    request("/answer/"+ n, "#game-container", "POST", paramsFunc);  
+    return false;
+}
