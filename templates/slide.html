@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Угадай-ка город</title>
-    </head>
-    <body>
-        <img src="{{imgPath}}"></img>
-        <p>
-            <form action="/answer/{{n}}" method="POST">
-                Ваш ответ: <input type="text" name="cityGuess"/>
-                <input type="submit"/>
-            </form>
-            {% if n > 0 %}<a href="/slide/{{n-1}}">Предыдущий слайд</a>{% endif %}
-            {% if n < totalSlides-1 %}<a href="/slide/{{n+1}}">Следующий слайд</a>{% endif %}
-            <a href="/hint/{{n}}">Подсказка</a>
-            <div class="hint">{{hint}}</div>
-            <div class="hint-not">{{hintNot}}</div>
-            <a href='/reset'>Начать заново</a>
-        </p>
-    </body>
-</html>
+<img src="{{imgPath}}"></img>
+<p>
+    <form action="/answer/{{n}}" method="POST">
+        Ваш ответ: <input type="text" name="cityGuess"/>
+        <input type="submit"/>
+    </form>
+    {% if n > 0 %}<a href="/slide/{{n-1}}">Предыдущий слайд</a>{% endif %}
+    {% if n < totalSlides-1 %}<a href="/slide/{{n+1}}">Следующий слайд</a>{% endif %}
+    <a href="/hint/{{n}}">Подсказка</a>
+    <div class="hint">{{hint}}</div>
+    <div class="hint-not">{{hintNot}}</div>
+    <a href='/reset'>Начать заново</a>
+</p>

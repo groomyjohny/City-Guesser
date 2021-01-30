@@ -92,8 +92,11 @@ def reset():
         slidePaths.append(slidePath)
 
     print("Игра сброшена. Новый город:",chosenCity)
-    return redirect('/slide/0')
+    return redirect('/game')
 
+@app.route("/game")
+def game(slide_number):
+    return render_template("game.html")
 @app.route('/hint/<int:slide_number>')
 def hintFunc(slide_number):
     global hintsUsed, hint, hintNot
