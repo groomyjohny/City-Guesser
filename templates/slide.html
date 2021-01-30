@@ -1,6 +1,6 @@
 <img src="{{imgPath}}"></img>
 <p>
-    <form action="/answer/{{n}}" method="POST">
+    <form action="/answer/{{n}}" method="POST" id="answer-form">
         Ваш ответ: <input type="text" name="cityGuess"/>
         <input type="submit"/>
     </form>
@@ -11,3 +11,12 @@
     <div class="hint-not">{{hintNot}}</div>
     <a href='/reset'>Начать заново</a>
 </p>
+
+<script>
+    let form = document.getElementById('answer-form')
+    form.addEventListener("submit",function(event) {
+        event.preventDefault();
+        let paramsFunc = function(){return new FormData(form)};
+        request("/answer/"+ {{n}}, "#game-container", "POST", paramsFunc);
+    })
+</script>
