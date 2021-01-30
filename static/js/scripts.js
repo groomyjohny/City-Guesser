@@ -28,6 +28,3 @@ function getHint(n)
 {
     request('/hint/'+n,"#game-container")
 }
-window.addEventListener("load", function() {
-    loadSlide(0);
-});

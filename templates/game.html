@@ -7,6 +7,11 @@
     <body>
         <div id="game-container"></div>
         <script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
+        <script>
+            window.addEventListener("load", function() {
+            loadSlide(0);
+            });
+        </script>        
     </body>
 </body>
 </html>
