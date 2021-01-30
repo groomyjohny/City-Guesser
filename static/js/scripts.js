@@ -1,15 +1,23 @@
 //make a GET HTTP request and put response into an element. WARNING: element's HTML will be overriden by the result!
-function request(address, responseSelector)
+async function request(address, responseSelector, method = 'GET', paramsFunc = function(){return ''})
 {
     let responseElement = document.querySelector(responseSelector);
-    let req = new XMLHttpRequest();
-    req.open('GET', address)
-    req.send();
-    req.onload = function() {
-        if (req.status == 200)
-        {
-            responseElement.innerHTML = req.response;
-        }
+    let dict = {};
+    dict.method = method;
+    if (method != 'GET') dict.body = paramsFunc(); 
+    let response = await fetch(address, dict);
+    if (response.ok)
+    {
+        responseElement.innerHTML = await response.text();
+    } 
+    else
+    {
+        let arr = [
+            "Произошла ошибка при выполнении запроса.",
+            method + " " + address,
+            "Код ошибки:" + response.status,
+        ];
+        responseElement.innerHTML = arr.join('<p>');
     }
 }
 function loadSlide(n)
