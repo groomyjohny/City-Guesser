@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Угадай-ка город</title>
+    </head>
+    <body>
+        <div id="game-container"></div>
+        <script>
+            function loadSlide(n)
+            {
+                let req = new XMLHttpRequest();
+                req.open('GET','/slide/'+n)
+                req.send();
+                req.onload = function() {
+                    if (req.status == 200)
+                    {
+                        document.getElementById('game-container').innerHTML = req.response;
+                    }
+                }
+            }
+        </script>
+    </body>
+</body>
+</html>
