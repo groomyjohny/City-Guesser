@@ -95,7 +95,7 @@ def reset():
     return redirect('/game')
 
 @app.route("/game")
-def game(slide_number):
+def game():
     return render_template("game.html")
 @app.route('/hint/<int:slide_number>')
 def hintFunc(slide_number):

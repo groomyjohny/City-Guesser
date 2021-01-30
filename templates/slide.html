@@ -4,9 +4,9 @@
         Ваш ответ: <input type="text" name="cityGuess"/>
         <input type="submit"/>
     </form>
-    {% if n > 0 %}<a href="/slide/{{n-1}}">Предыдущий слайд</a>{% endif %}
-    {% if n < totalSlides-1 %}<a href="/slide/{{n+1}}">Следующий слайд</a>{% endif %}
-    <a href="/hint/{{n}}">Подсказка</a>
+    {% if n > 0 %}<a href="javascript:loadSlide({{n-1}})">Предыдущий слайд</a>{% endif %}
+    {% if n < totalSlides-1 %}<a href="javascript:loadSlide({{n+1}})">Следующий слайд</a>{% endif %}
+    <a href="javascript:getHint({{n}})">Подсказка</a>
     <div class="hint">{{hint}}</div>
     <div class="hint-not">{{hintNot}}</div>
     <a href='/reset'>Начать заново</a>
