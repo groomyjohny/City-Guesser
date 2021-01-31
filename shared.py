@@ -1,6 +1,12 @@
 from apikey import *
 import requests
+
 staticApiAddr = "https://static-maps.yandex.ru/1.x/?"
+GAME_VERSION_DIGITS = [ 0, 3, 0, 0]
+GAME_VERSION_STRING = ''
+for i in GAME_VERSION_DIGITS:
+    GAME_VERSION_STRING += str(i).zfill(2)
+
 def fetch_coordinates(apikey, place):
     base_url = "https://geocode-maps.yandex.ru/1.x"
     params = {"geocode": place, "apikey": apikey, "format": "json"}
