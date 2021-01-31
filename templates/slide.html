@@ -1,11 +1,30 @@
+<style>
+    .slide-link-inactive {
+        text-decoration: none;
+        color: grey;
+    }
+</style>
 <img src="{{imgPath}}"></img>
 <p>
     <form action="javascript:" onsubmit="submitGuess({{n}})" id="answer-form">
         Ваш ответ: <input type="text" name="cityGuess"/>
         <input type="submit"/>
     </form>
-    {% if n > 0 %}<a href="javascript:loadSlide({{n-1}})">Предыдущий слайд</a>{% endif %}
-    {% if n < totalSlides-1 %}<a href="javascript:loadSlide({{n+1}})">Следующий слайд</a>{% endif %}
+
+    {% if n > 0 %}
+        <a href="javascript:loadSlide({{n-1}})" class="slide-link-normal">
+    {% else %}
+        <a class="slide-link-inactive">
+    {% endif %}
+    Предыдущий слайд</a>
+
+    {% if n < totalSlides-1 %}
+        <a href="javascript:loadSlide({{n+1}})" class="slide-link-normal">
+    {% else %}
+        <a class="slide-link-inactive">
+    {% endif %}        
+    Следующий слайд</a>
+    
     <a href="javascript:getHint({{n}})">Подсказка</a>
     <div class="hint">Подсказка: на картинке изображен один из этих городов: {{', '.join(hint)}}</div>
     {% if hintNot|length > 0 %}<div class="hint-not">Подсказка: это точно НЕ: {{ ', '.join(hintNot)}}</div>{% endif %}
