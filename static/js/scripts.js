@@ -1,5 +1,5 @@
 //make a GET HTTP request and put response into an element. WARNING: element's HTML will be overriden by the result!
-async function request(address, responseSelector, method = 'GET', paramsFunc = function(){return ''})
+async function request(address, responseSelector, method = 'GET', paramsFunc = function(){})
 {
     let responseElement = document.querySelector(responseSelector);
     let dict = {};
