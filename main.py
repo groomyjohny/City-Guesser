@@ -53,8 +53,7 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    #return render_template('leaderboard.html')
-    pass
+    return render_template('leaderboard.html', data = [[]])
 
 games = {}
 app.run(host = '0.0.0.0', port = 8080)
