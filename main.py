@@ -4,11 +4,7 @@ import requests
 from GameInstance import GameInstance
 from shared import *
 
-
-games = {}
-
 app = Flask(__name__)
-
 @app.route('/slide/<int:slide_number>')
 def slide(slide_number):
     clientAddr = request.environ["REMOTE_ADDR"]
@@ -57,5 +53,6 @@ def won():
 @app.route('/')
 def index():
     return render_template('index.html')
-    
+
+games = {}
 app.run(host = '0.0.0.0', port = 8080)
