@@ -61,7 +61,7 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    data = sqlQuery('SELECT * from results')
+    data = sqlQuery('SELECT * from results ORDER BY points DESC')
     return render_template('leaderboard.html', data=data)
 
 games = {}
