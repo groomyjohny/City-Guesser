@@ -82,7 +82,6 @@ tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
   `points` int(11) GENERATED ALWAYS AS (10000000 / ((`gameDuration`+100) * (`hintsUsed` + 1))) VIRTUAL
 )''')
 
-#tableCreateQuery = tableCreateQuery[0:int(len(tableCreateQuery)/4)]
 path = os.path.join(os.path.abspath(
         os.path.dirname(__file__)), 'database.db')
 if not os.path.isfile(path):
