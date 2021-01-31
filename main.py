@@ -23,9 +23,16 @@ def reset():
     print("Клиент ",clientAddr, " получил город: ", games[clientAddr].chosenCity)
     return redirect('/game')
 
-@app.route("/game")
+@app.route("/game", methods = ["GET", "POST"])
 def game():
-    return render_template("game.html")
+    if request.method == "GET":
+        return render_template("game.html")
+    else:
+        clientAddr = request.environ["REMOTE_ADDR"]
+        g = games[clientAddr]
+        usrName = request.form['username']
+        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(usrName, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING)) 
+        return redirect('/leaderboard')
 
 @app.route('/hint/<int:slide_number>')
 def hintFunc(slide_number):
@@ -36,20 +43,21 @@ def hintFunc(slide_number):
 @app.route('/answer/<int:slideNum>', methods = ['POST'])
 def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].checkGuess(request.form['cityGuess']):
-        g = games[clientAddr]
-        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(clientAddr, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING))        
+    if games[clientAddr].checkGuess(request.form['cityGuess']):               
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
 
-@app.route('/won')
+@app.route('/won', methods = ["GET", "POST"])
 def won():
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].gameWon:
-        return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
+    if request.method == "GET":
+        if games[clientAddr].gameWon:
+            return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
+        else:
+            return abort(404)
     else:
-        return abort(404)
+       pass
 
 @app.route('/')
 def index():
@@ -57,7 +65,7 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    data = sqlQuery('SELECT * from results')
+    data = sqlQuery('SELECT * from results ORDER BY points DESC')
     return render_template('leaderboard.html', data=data)
 
 games = {}
