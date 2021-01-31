@@ -38,7 +38,7 @@ def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
     if games[clientAddr].checkGuess(request.form['cityGuess']):
         g = games[clientAddr]
-        sqlQuery("INSERT INTO results (username, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES ?",(clientAddr, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION))        
+        sqlQuery("INSERT INTO results (username, hintsUsed, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?)",(clientAddr, g.hintsUsed, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING))        
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
@@ -64,22 +64,22 @@ games = {}
 
 def sqlQuery(query, params = []):
     conn = sqlite3.connect('database.db')
-    data = conn.query(query, params).all()
+    data = conn.cursor().execute(query, params).fetchall()
     conn.commit()
     conn.close()
     return data
 
 import os
 tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
-  `id` int(11) NOT NULL,
+  `id` INTEGER PRIMARY KEY,
   `username` varchar(256) DEFAULT NULL,
   `hintsUsed` int(11) DEFAULT NULL,
   `cityName` varchar(256) DEFAULT NULL,
   `gameStartTime` datetime DEFAULT current_timestamp,
   `gameEndTime` datetime DEFAULT current_timestamp,
-  `gameDuration` time GENERATED ALWAYS AS (`gameEndTime` - `gameStartTime`) VIRTUAL,
+  `gameDuration` double,
   `gameVersion` int(11) DEFAULT NULL,
-  `points` int(11) GENERATED ALWAYS AS (100000 / (`gameStartTime` * (`hintsUsed` + 1))) VIRTUAL
+  `points` int(11) GENERATED ALWAYS AS (10000000 / ((`gameDuration`+100) * (`hintsUsed` + 1))) VIRTUAL
 )''')
 
 #tableCreateQuery = tableCreateQuery[0:int(len(tableCreateQuery)/4)]
@@ -88,9 +88,9 @@ path = os.path.join(os.path.abspath(
 if not os.path.isfile(path):
     f = open(path, "w")
     f.close()
-conn = sqlite3.connect('database.db')
-conn.execute(tableCreateQuery)
-conn.commit()
-conn.close()
+SQL_CONNECTION = sqlite3.connect('database.db')
+SQL_CONNECTION.execute(tableCreateQuery)
+SQL_CONNECTION.commit()
+SQL_CONNECTION.close()
 
 app.run(host = '0.0.0.0', port = 8080)
