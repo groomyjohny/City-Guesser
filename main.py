@@ -1,6 +1,4 @@
-from apikey import apikey
 from flask import Flask, render_template, redirect, request, abort
-import requests
 from GameInstance import GameInstance
 from shared import *
 
@@ -9,11 +7,11 @@ app = Flask(__name__)
 def slide(slide_number):
     clientAddr = request.environ["REMOTE_ADDR"]
     return render_template("slide.html",
-    n = slide_number,
-    imgPath = games[clientAddr].slidePaths[slide_number],
-    totalSlides = len(games[clientAddr].slidePaths),
-    hint = "Подсказка: это - один из следующих городов: "+ ', '.join(games[clientAddr].hint),
-    hintNot = "Подсказка: это НЕ один из следующих городов: "+ ', '.join(games[clientAddr].hintNot)
+        n = slide_number,
+        imgPath = games[clientAddr].slidePaths[slide_number],
+        totalSlides = len(games[clientAddr].slidePaths),
+        hint = "Подсказка: это - один из следующих городов: "+ ', '.join(games[clientAddr].hint),
+        hintNot = "Подсказка: это НЕ один из следующих городов: "+ ', '.join(games[clientAddr].hintNot)
     )
 
 @app.route('/reset')
