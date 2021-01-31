@@ -10,11 +10,11 @@ class GameInstance:
     def __init__(self) -> None:
         self.hint = []
         self.reset()
+        pass
 
     def reset(self):        
         slidePaths = []
         chosenCity =  random.choice(cities)
-        chosenCity = chosenCity
         hint = cities
         hintNot = []
         cityCoords = fetch_coordinates(apikey,chosenCity)
@@ -35,13 +35,13 @@ class GameInstance:
             slidePath = staticApiAddr + encodeParams(args)
             slidePaths.append(slidePath)
         
-        self.slidePaths = slidePaths,
-        self.chosenCity = chosenCity,
-        self.hint = []
-        self.hint = hint,
-        self.hintNot = hintNot,
-        self.cityCoords = cityCoords,
+        self.slidePaths = slidePaths
+        self.chosenCity = chosenCity
+        self.hint = hint
+        self.hintNot = hintNot
+        self.cityCoords = cityCoords
         self.hintsUsed = hintsUsed
+        pass
 
     def getHint(self):
         if len(self.hint) > 2:
@@ -49,6 +49,7 @@ class GameInstance:
             self.hintNot.append(el)
             self.hint.remove(el)
             self.hintsUsed += 1
+            pass
     
 
 def fetch_coordinates(apikey, place):
@@ -84,6 +85,7 @@ def slide(slide_number):
 def reset():
     clientAddr = request.environ["REMOTE_ADDR"]
     games[clientAddr] = GameInstance()
+    print("Клиент ",clientAddr, " получил город: ", games[clientAddr].chosenCity)
     return redirect('/game')
 
 @app.route("/game")
