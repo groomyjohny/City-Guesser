@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, request, abort
 from GameInstance import GameInstance
 from shared import *
+import sqlite3
+
 
 app = Flask(__name__)
 @app.route('/slide/<int:slide_number>')
@@ -34,7 +36,9 @@ def hintFunc(slide_number):
 @app.route('/answer/<int:slideNum>', methods = ['POST'])
 def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].checkGuess(request.form['cityGuess']):        
+    if games[clientAddr].checkGuess(request.form['cityGuess']):
+        g = games[clientAddr]
+        sqlQuery("INSERT INTO results (username, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES ?",(clientAddr, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION))        
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
@@ -53,7 +57,40 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    return render_template('leaderboard.html', data = [[]])
+    data = sqlQuery('SELECT * from results')
+    return render_template('leaderboard.html', data=data)
 
 games = {}
+
+def sqlQuery(query, params = []):
+    conn = sqlite3.connect('database.db')
+    data = conn.query(query, params).all()
+    conn.commit()
+    conn.close()
+    return data
+
+import os
+tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
+  `id` int(11) NOT NULL,
+  `username` varchar(256) DEFAULT NULL,
+  `hintsUsed` int(11) DEFAULT NULL,
+  `cityName` varchar(256) DEFAULT NULL,
+  `gameStartTime` datetime DEFAULT current_timestamp,
+  `gameEndTime` datetime DEFAULT current_timestamp,
+  `gameDuration` time GENERATED ALWAYS AS (`gameEndTime` - `gameStartTime`) VIRTUAL,
+  `gameVersion` int(11) DEFAULT NULL,
+  `points` int(11) GENERATED ALWAYS AS (100000 / (`gameStartTime` * (`hintsUsed` + 1))) VIRTUAL
+)''')
+
+#tableCreateQuery = tableCreateQuery[0:int(len(tableCreateQuery)/4)]
+path = os.path.join(os.path.abspath(
+        os.path.dirname(__file__)), 'database.db')
+if not os.path.isfile(path):
+    f = open(path, "w")
+    f.close()
+conn = sqlite3.connect('database.db')
+conn.execute(tableCreateQuery)
+conn.commit()
+conn.close()
+
 app.run(host = '0.0.0.0', port = 8080)
