@@ -1,13 +1,8 @@
 from cities import cities
 staticApiAddr = "https://static-maps.yandex.ru/1.x/?"
+games = {}
 
-hint = []
-hintNot = []
-chosenCity = ''
-cityCoords = []
-hintsUsed = 0
-
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, abort
 from apikey import apikey
 import random
 import requests
@@ -30,24 +25,25 @@ def encodeParams(args):
 
 app = Flask(__name__)
 
-slidePaths = []
 @app.route('/slide/<int:slide_number>')
 def slide(slide_number):
+    clientAddr = request.environ["REMOTE_ADDR"]
     return render_template("slide.html",
     n = slide_number,
-    imgPath = slidePaths[slide_number],
-    totalSlides = len(slidePaths),
-    hint = "Подсказка: это - один из следующих городов: "+ ', '.join(hint),
-    hintNot = "Подсказка: это НЕ один из следующих городов: "+ ', '.join(hintNot)
+    imgPath = games[clientAddr].slidePaths[slide_number],
+    totalSlides = len(games[clientAddr].slidePaths),
+    hint = "Подсказка: это - один из следующих городов: "+ ', '.join(games[clientAddr].hint),
+    hintNot = "Подсказка: это НЕ один из следующих городов: "+ ', '.join(games[clientAddr].hintNot)
     )
 
 @app.route('/reset')
 def reset():
-    global hintsUsed, hint, hintNot, chosenCity, cityCoords
-    slidePaths.clear()
-    chosenCity = random.choice(cities)
+    clientAddr = request.environ["REMOTE_ADDR"]
+    slidePaths = []
+    chosenCity =  random.choice(cities)
+    chosenCity = chosenCity
     hint = cities
-    hintNot.clear()
+    hintNot = []
     cityCoords = fetch_coordinates(apikey,chosenCity)
     cityCoords = [ float(cityCoords[0]), float(cityCoords[1]) ]
     hintsUsed = 0
@@ -67,31 +63,46 @@ def reset():
         slidePaths.append(slidePath)
 
     print("Игра сброшена. Новый город:",chosenCity)
+    games[clientAddr] = {
+        'slidePaths': slidePaths,
+        'chosenCity': chosenCity,
+        'hint': hint,
+        'hintNot': hintNot,
+        'cityCoords': cityCoords,
+        'hintsUsed': hintsUsed,
+    }
     return redirect('/game')
 
 @app.route("/game")
 def game():
     return render_template("game.html")
+
 @app.route('/hint/<int:slide_number>')
 def hintFunc(slide_number):
-    global hintsUsed, hint, hintNot
-    if len(hint) > 2:
-        el = random.choice(hint)
-        hintNot.append(el)
-        hint.remove(el)
-        hintsUsed += 1
+    clientAddr = request.environ["REMOTE_ADDR"]
+    if len(games[clientAddr].hint) > 2:
+        el = random.choice(games[clientAddr].hint)
+        games[clientAddr].hintNot.append(el)
+        games[clientAddr].hint.remove(el)
+        games[clientAddr].hintsUsed += 1
     return redirect(f'/slide/{slide_number}')
 
 @app.route('/answer/<int:slideNum>', methods = ['POST'])
 def answer(slideNum):
-    if request.form['cityGuess'] == chosenCity:
+    clientAddr = request.environ["REMOTE_ADDR"]
+    if request.form['cityGuess'] == games[clientAddr].chosenCity:
+        games[clientAddr].wonGame = True
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
 
 @app.route('/won')
 def won():
-    return render_template("won.html", hintsUsed = hintsUsed)
+    clientAddr = request.environ["REMOTE_ADDR"]
+    if games[clientAddr].wonGame:
+        return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
+    else:
+        return abort(404)
 
 @app.route('/')
 def index():
