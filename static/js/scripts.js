@@ -16,6 +16,8 @@ async function request(address, responseSelector, method = 'GET', paramsFunc = f
             "Произошла ошибка при выполнении запроса.",
             method + " " + address,
             "Код ошибки:" + response.status,
+            'Ответ сервера:',
+            '<div id="response-error-server-response">' + await response.text() + '</div>'
         ];
         responseElement.innerHTML = arr.join('<p>');
     }
