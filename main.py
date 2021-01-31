@@ -38,7 +38,7 @@ def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
     if games[clientAddr].checkGuess(request.form['cityGuess']):
         g = games[clientAddr]
-        sqlQuery("INSERT INTO results (username, hintsUsed, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?)",(clientAddr, g.hintsUsed, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING))        
+        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(clientAddr, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING))        
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
@@ -74,12 +74,13 @@ tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
   `id` INTEGER PRIMARY KEY,
   `username` varchar(256) DEFAULT NULL,
   `hintsUsed` int(11) DEFAULT NULL,
+  `wrongAnswers` int(11) DEFAULT NULL,
   `cityName` varchar(256) DEFAULT NULL,
   `gameStartTime` datetime DEFAULT current_timestamp,
   `gameEndTime` datetime DEFAULT current_timestamp,
   `gameDuration` double,
   `gameVersion` int(11) DEFAULT NULL,
-  `points` int(11) GENERATED ALWAYS AS (10000000 / ((`gameDuration`+100) * (`hintsUsed` + 1))) VIRTUAL
+  `points` int(11) GENERATED ALWAYS AS (100000000 / ((`gameDuration`+180) * (`wrongAnswers`+1) * (`hintsUsed` + 3))) VIRTUAL
 )''')
 
 path = os.path.join(os.path.abspath(

@@ -37,6 +37,7 @@ class GameInstance:
         self.hintNot = hintNot
         self.cityCoords = cityCoords
         self.hintsUsed = hintsUsed
+        self.wrongGuesses = 0
         self.gameWon = False
         self.gameStartTime = _datetime.datetime.now()
         pass
@@ -54,5 +55,7 @@ class GameInstance:
         if self.gameWon:
             self.gameEndTime = _datetime.datetime.now()
             self.gameDuration = (self.gameEndTime-self.gameStartTime).total_seconds()
+        else:
+            self.wrongGuesses += 1
         return self.gameWon
     
