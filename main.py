@@ -93,4 +93,4 @@ SQL_CONNECTION.execute(tableCreateQuery)
 SQL_CONNECTION.commit()
 SQL_CONNECTION.close()
 
-app.run(host = '0.0.0.0', port = 8080)
+app.run(host = '0.0.0.0', port = 8333)
