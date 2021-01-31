@@ -10,8 +10,8 @@ def slide(slide_number):
         n = slide_number,
         imgPath = games[clientAddr].slidePaths[slide_number],
         totalSlides = len(games[clientAddr].slidePaths),
-        hint = "Подсказка: это - один из следующих городов: "+ ', '.join(games[clientAddr].hint),
-        hintNot = "Подсказка: это НЕ один из следующих городов: "+ ', '.join(games[clientAddr].hintNot)
+        hint = games[clientAddr].hint,
+        hintNot = games[clientAddr].hintNot
     )
 
 @app.route('/reset')

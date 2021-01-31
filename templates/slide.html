@@ -7,8 +7,8 @@
     {% if n > 0 %}<a href="javascript:loadSlide({{n-1}})">Предыдущий слайд</a>{% endif %}
     {% if n < totalSlides-1 %}<a href="javascript:loadSlide({{n+1}})">Следующий слайд</a>{% endif %}
     <a href="javascript:getHint({{n}})">Подсказка</a>
-    <div class="hint">{{hint}}</div>
-    <div class="hint-not">{{hintNot}}</div>
+    <div class="hint">Подсказка: на картинке изображен один из этих городов: {{', '.join(hint)}}</div>
+    {% if hintNot|length > 0 %}<div class="hint-not">Подсказка: это точно НЕ: {{ ', '.join(hintNot)}}</div>{% endif %}
     <a href='/reset'>Начать заново</a>
 </p>
 
