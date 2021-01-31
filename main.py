@@ -42,7 +42,7 @@ def answer(slideNum):
 @app.route('/won')
 def won():
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].wonGame:
+    if games[clientAddr].gameWon:
         return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
     else:
         return abort(404)
@@ -50,6 +50,11 @@ def won():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/leaderboard')
+def leaderboard():
+    #return render_template('leaderboard.html')
+    pass
 
 games = {}
 app.run(host = '0.0.0.0', port = 8080)

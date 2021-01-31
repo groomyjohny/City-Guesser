@@ -1,6 +1,7 @@
 import random
 from cities import cities
 from shared import *
+import datetime
 
 class GameInstance:
     def __init__(self) -> None:
@@ -37,6 +38,7 @@ class GameInstance:
         self.cityCoords = cityCoords
         self.hintsUsed = hintsUsed
         self.gameWon = False
+        self.gameStartTime = datetime.datetime()
         pass
 
     def getHint(self):
@@ -49,5 +51,8 @@ class GameInstance:
 
     def checkGuess(self, guess):
         self.gameWon = guess == self.chosenCity
+        if self.gameWon:
+            self.gameEndTime = datetime.datetime()
+            self.gameDuration = (self.gameEndTime-self.gameStartTime).total_seconds()
         return self.gameWon
     
