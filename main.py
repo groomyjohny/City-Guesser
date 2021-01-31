@@ -23,9 +23,16 @@ def reset():
     print("Клиент ",clientAddr, " получил город: ", games[clientAddr].chosenCity)
     return redirect('/game')
 
-@app.route("/game")
+@app.route("/game", methods = ["GET", "POST"])
 def game():
-    return render_template("game.html")
+    if request.method == "GET":
+        return render_template("game.html")
+    else:
+        clientAddr = request.environ["REMOTE_ADDR"]
+        g = games[clientAddr]
+        usrName = request.form['username']
+        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(usrName, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING)) 
+        return redirect('/leaderboard')
 
 @app.route('/hint/<int:slide_number>')
 def hintFunc(slide_number):
@@ -50,10 +57,7 @@ def won():
         else:
             return abort(404)
     else:
-        g = games[clientAddr]
-        usrName = request.form['username']
-        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(usrName, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING)) 
-        return redirect('/leaderboard')
+       pass
 
 @app.route('/')
 def index():
