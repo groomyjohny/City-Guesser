@@ -2,23 +2,27 @@
     #leaderboard-table {
         border: 1px solid black;
     }
+    .board-cell, th {
+        border-right: 1px solid black;
+        border-collapse: collapse;
+    }
 </style>
 <h1 style="text-align: center;">Таблица лидеров</h1>
 <table id="leaderboard-table">
     <th>ID</th>
     <th>Имя</th>
-    <th>Подсказок</th>
+    <th>Подсказок использовано</th>
     <th>Неправильных ответов</th>
     <th>Загаданный город</th>
     <th>Начало игры</th>
     <th>Конец игры</th>
     <th>Длительность</th>
-    <th>Версия</th>
+    <th>Номер версии</th>
     <th>Очки</th>
     {% for el in data %}
         <tr>
             {% for el2 in el %}
-            <td>{{el2}}</td>
+            <td class="board-cell">{{el2}}</td>
             {% endfor %}
         </tr>
     {% endfor %}
