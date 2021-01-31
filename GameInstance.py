@@ -4,7 +4,6 @@ from shared import *
 
 class GameInstance:
     def __init__(self) -> None:
-        self.hint = []
         self.reset()
         pass
 
@@ -37,6 +36,7 @@ class GameInstance:
         self.hintNot = hintNot
         self.cityCoords = cityCoords
         self.hintsUsed = hintsUsed
+        self.gameWon = False
         pass
 
     def getHint(self):
@@ -45,4 +45,9 @@ class GameInstance:
             self.hintNot.append(el)
             self.hint.remove(el)
             self.hintsUsed += 1
-            pass
+    pass
+
+    def checkGuess(self, guess):
+        self.gameWon = guess == self.chosenCity
+        return self.gameWon
+    

@@ -34,8 +34,7 @@ def hintFunc(slide_number):
 @app.route('/answer/<int:slideNum>', methods = ['POST'])
 def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
-    if request.form['cityGuess'] == games[clientAddr].chosenCity:
-        games[clientAddr].wonGame = True
+    if games[clientAddr].checkGuess(request.form['cityGuess']):        
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
