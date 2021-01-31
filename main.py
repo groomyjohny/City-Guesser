@@ -36,20 +36,24 @@ def hintFunc(slide_number):
 @app.route('/answer/<int:slideNum>', methods = ['POST'])
 def answer(slideNum):
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].checkGuess(request.form['cityGuess']):
-        g = games[clientAddr]
-        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(clientAddr, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING))        
+    if games[clientAddr].checkGuess(request.form['cityGuess']):               
         return redirect('/won')
     else:
         return redirect(f'/slide/{slideNum}')
 
-@app.route('/won')
+@app.route('/won', methods = ["GET", "POST"])
 def won():
     clientAddr = request.environ["REMOTE_ADDR"]
-    if games[clientAddr].gameWon:
-        return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
+    if request.method == "GET":
+        if games[clientAddr].gameWon:
+            return render_template("won.html", hintsUsed = games[clientAddr].hintsUsed)
+        else:
+            return abort(404)
     else:
-        return abort(404)
+        g = games[clientAddr]
+        usrName = request.form['username']
+        sqlQuery("INSERT INTO results (username, hintsUsed, wrongAnswers, cityName, gameStartTime, gameEndTime, gameDuration, gameVersion) VALUES (?,?,?,?,?,?,?,?)",(usrName, g.hintsUsed, g.wrongGuesses, g.chosenCity, g.gameStartTime, g.gameEndTime, g.gameDuration, GAME_VERSION_STRING)) 
+        return redirect('/leaderboard')
 
 @app.route('/')
 def index():
@@ -93,4 +97,4 @@ SQL_CONNECTION.execute(tableCreateQuery)
 SQL_CONNECTION.commit()
 SQL_CONNECTION.close()
 
-app.run(host = '0.0.0.0', port = 8080)
+app.run(host = '0.0.0.0', port = 8333)

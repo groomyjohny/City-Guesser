@@ -6,7 +6,12 @@
     </head>
     <body>
         <h1>Поздравляем, вы угадали город!</h1>
-		<p>Использовано подсказок: {{hintsUsed}}</p>
+        Вы можете ввести ник, чтобы попасть в таблицу лидеров:
+        <form method="POST">
+            Ник:<input type="text" name="username"/>
+            <input type="submit"/>
+        </form>
+        
 		<a href="/reset">Новая игра</a>
     </body>
 </html>
