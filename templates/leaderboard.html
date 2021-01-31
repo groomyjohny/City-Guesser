@@ -1,0 +1,18 @@
+<table>
+    <th>ID</th>
+    <th>Имя</th>
+    <th>Подсказок</th>
+    <th>Загаданный город</th>
+    <th>Начало игры</th>
+    <th>Конец игры</th>
+    <th>Длительность</th>
+    <th>Версия</th>
+    <th>Очки</th>
+    {% for el in data %}
+        <tr>
+            {% for el2 in el %}
+            <td>{{el2}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
