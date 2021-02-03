@@ -65,17 +65,34 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    data = sqlQuery('SELECT * from results ORDER BY points DESC')
-    return render_template('leaderboard.html', data=data)
+    q = "SELECT "
+    translations = {
+        'id': "ID",
+        'username': "Имя",
+        "hintsUsed": "Подсказок использовано",
+        "wrongAnswers": "Неправильных ответов",
+        "cityName" : "Загаданный город",
+        "gameStartTime" : "Время начала",
+        "gameEndTime" : "Время конца",
+        "gameVersion": "Версия игры",
+        "points": "Очки"
+    }
+    for k,v in translations.items(): q += f"`{k}` AS `{v}`, "
+    q = q[:-2] + " FROM results ORDER BY points DESC"
+    data, colNames = sqlQuery(q)
+    return render_template('leaderboard.html', data=data, colNames=colNames)
 
 games = {}
 
 def sqlQuery(query, params = []):
     conn = sqlite3.connect('database.db')
-    data = conn.cursor().execute(query, params).fetchall()
-    conn.commit()
+    cur = conn.cursor()
+    cur = cur.execute(query, params)
+    colNames = [tuple[0] for tuple in cur.description]
+    data = cur.fetchall()
+    conn.commit()    
     conn.close()
-    return data
+    return (data, colNames)
 
 import os
 tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
