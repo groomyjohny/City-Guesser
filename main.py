@@ -65,7 +65,21 @@ def index():
 
 @app.route('/leaderboard')
 def leaderboard():
-    data = sqlQuery('SELECT * from results ORDER BY points DESC')
+    q = "SELECT "
+    translations = {
+        'id': "ID",
+        'username': "Имя",
+        "hintsUsed": "Подсказок использовано",
+        "wrongAnswers": "Неправильных ответов",
+        "cityName" : "Загаданный город",
+        "gameStartTime" : "Время начала",
+        "gameEndTime" : "Время конца",
+        "gameVersion": "Версия игры",
+        "points": "Очки"
+    }
+    for k,v in translations.items(): q += f"`{k}` AS `{v}`, "
+    q = q[:-2] + " FROM results ORDER BY points DESC"
+    data = sqlQuery(q)
     return render_template('leaderboard.html', data=data)
 
 games = {}
