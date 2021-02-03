@@ -79,17 +79,20 @@ def leaderboard():
     }
     for k,v in translations.items(): q += f"`{k}` AS `{v}`, "
     q = q[:-2] + " FROM results ORDER BY points DESC"
-    data = sqlQuery(q)
-    return render_template('leaderboard.html', data=data)
+    data, colNames = sqlQuery(q)
+    return render_template('leaderboard.html', data=data, colNames=colNames)
 
 games = {}
 
 def sqlQuery(query, params = []):
     conn = sqlite3.connect('database.db')
-    data = conn.cursor().execute(query, params).fetchall()
-    conn.commit()
+    cur = conn.cursor()
+    cur = cur.execute(query, params)
+    colNames = [tuple[0] for tuple in cur.description]
+    data = cur.fetchall()
+    conn.commit()    
     conn.close()
-    return data
+    return (data, colNames)
 
 import os
 tableCreateQuery = str('''CREATE TABLE IF NOT EXISTS `results` (
