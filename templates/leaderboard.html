@@ -1,10 +1,18 @@
 <style>
     #leaderboard-table {
         border: 1px solid black;
+        border-collapse: collapse;
     }
     .board-cell, th {
-        border-right: 1px solid black;
-        border-collapse: collapse;
+        border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .board-cell {
+        padding: 2px 2px;
+    }
+
+    tr:hover {
+        background-color: rgba(255, 255, 0, 0.25);
     }
 </style>
 <h1 style="text-align: center;">Таблица лидеров</h1>
