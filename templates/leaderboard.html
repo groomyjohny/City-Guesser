@@ -9,16 +9,10 @@
 </style>
 <h1 style="text-align: center;">Таблица лидеров</h1>
 <table id="leaderboard-table">
-    <th>ID</th>
-    <th>Имя</th>
-    <th>Подсказок использовано</th>
-    <th>Неправильных ответов</th>
-    <th>Загаданный город</th>
-    <th>Начало игры</th>
-    <th>Конец игры</th>
-    <th>Длительность</th>
-    <th>Номер версии</th>
-    <th>Очки</th>
+    {% for el in colNames %}
+        <th>{{el}}</th>
+    {% endfor %}
+    
     {% for el in data %}
         <tr>
             {% for el2 in el %}
